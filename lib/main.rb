@@ -19,12 +19,24 @@ module PgWriter
           log "player: #{msg.body}"
           process_player Player.new(msg.body)
         end
-        log "going to sleep: poll stopped returning players"
+        @qs.poll_games do |msg|
+          log "game: #{msg.body}"
+          process_game Game.new(msg.body)
+        end
+        log "going to sleep: poll stopped returning messages"
         sleep 60
       end
     end
 
     private
+
+    def process_game g
+      if g.valid?
+        @db.insert_game(g)
+      else
+        log 'skip: invalid game'
+      end
+    end
 
     def process_player p
       if p.valid?

@@ -9,11 +9,11 @@ module PgWriter
     end
 
     def poll_players
-      @pq.poll(batch_size: 10, idle_timeout: 3) { |msg| yield msg }
+      @pq.poll(poll_opts) { |msg| yield msg }
     end
 
-    def deq_games
-      @gq.receive_messages(limit: 10) { |msg| yield msg }
+    def poll_games
+      @gq.poll(poll_opts) { |msg| yield msg }
     end
 
     private
@@ -23,6 +23,10 @@ module PgWriter
         access_key_id: ENV['AWS_ACCESS_KEY_ID'],
         secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
       }
+    end
+
+    def poll_opts
+      {:batch_size => 10, :idle_timeout => 3}
     end
   end
 end

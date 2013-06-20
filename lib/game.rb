@@ -5,7 +5,7 @@ module PgWriter
     end
 
     def gamedate
-      dparts = @h.fetch('gamedate').split('-')
+      dparts = @h.fetch('date').split('-').map(&:to_i)
       raise 'Invalid date' if dparts.length != 3
       Date.new *dparts
     end
@@ -20,6 +20,10 @@ module PgWriter
 
     def black
       @h.fetch 'black'
+    end
+
+    def valid?
+      @h.is_a?(Hash) && @h.length == 4
     end
   end
 end
