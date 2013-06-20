@@ -5,8 +5,6 @@ require_relative 'player'
 require_relative 'msg_queues'
 
 module PgWriter
-  VERBOSE = false
-
   class Main
     include Log
 
