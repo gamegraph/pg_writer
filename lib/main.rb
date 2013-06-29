@@ -1,7 +1,6 @@
 require_relative 'log'
 require_relative 'db'
 require_relative 'game'
-require_relative 'player'
 require_relative 'msg_queues'
 
 module PgWriter
@@ -15,10 +14,6 @@ module PgWriter
 
     def run
       while true do
-        @qs.poll_players do |msg|
-          log "player: #{msg.body}"
-          process_player Player.new(msg.body)
-        end
         @qs.poll_games do |msg|
           log "game: #{msg.body}"
           process_game Game.new(msg.body)
@@ -35,14 +30,6 @@ module PgWriter
         @db.insert_game(g)
       else
         log 'skip: invalid game'
-      end
-    end
-
-    def process_player p
-      if p.valid?
-        @db.insert_player(p)
-      else
-        log 'skip: invalid player'
       end
     end
   end

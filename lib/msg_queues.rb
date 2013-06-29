@@ -4,12 +4,7 @@ module PgWriter
   class MsgQueues
     def initialize
       sqs = AWS::SQS.new aws_cred
-      @pq = sqs.queues.named('gagra_players')
       @gq = sqs.queues.named('gagra_games')
-    end
-
-    def poll_players
-      @pq.poll(poll_opts) { |msg| yield msg }
     end
 
     def poll_games
